@@ -24,9 +24,9 @@ def main():
 	lines = map(lambda x : map(_tonum, x.replace('\n', '').split('\t')), lines)
 
 	things =  filter_by_variable(lines, 1.0)
-	 
-	for p in cr.top_center(things):
-		print p
+
+	print cr.top_center(things)
+
 
 
 if __name__ == '__main__':

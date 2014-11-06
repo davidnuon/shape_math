@@ -16,10 +16,13 @@ def top_center(rows):
 	meanX = sum(xCoords)/len(xCoords)
 
 	bigYs = filter(lambda x : x[1] > meanY, theCoords)
-	return bigYs
+	bigYsMIN = min(map(lambda x : x[0], bigYs)) 
+	bigYsMAX = max(map(lambda x : x[0], bigYs)) 
+	centerX  = (bigYsMAX + bigYsMIN)/2
 
+	diffs = map(lambda x : abs(x[0] - centerX), theCoords)
 
-
+	return sorted(zip(diffs, theCoords))[0][1]
 
 """
 	 LeftCENTER
