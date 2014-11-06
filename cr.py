@@ -25,10 +25,33 @@ def top_center(rows):
 	return sorted(zip(diffs, theCoords))[0][1]
 
 """
-	 LeftCENTER
+	LeftCENTER
+	
 	Filter data by selecting values below average for all X values  
 	To find LeftCENTER Y value, add maximum and minimum Y values and then divide by 2. 
 	To Find LeftCENTER X-value, use VLOOKUP command with LeftCENTER Y value to find the corresponding X-value. 
+"""
+
+def left_center(rows):
+	yCoords = map(lambda x : x[6], rows)
+	xCoords = map(lambda x : x[5], rows)
+	theCoords = zip(xCoords, yCoords)
+
+	meanY = sum(yCoords)/len(yCoords)
+	meanX = sum(xCoords)/len(xCoords)
+
+	bigYs = filter(lambda x : x[1] > meanY, theCoords)
+	bigYsMIN = min(map(lambda x : x[0], bigYs)) 
+	bigYsMAX = max(map(lambda x : x[0], bigYs)) 
+	centerX  = (bigYsMAX + bigYsMIN)/2
+
+	diffs = map(lambda x : abs(x[0] - centerX), theCoords)
+
+	return sorted(zip(diffs, theCoords))[0][1]
+
+
+
+"""
 	RightCENTER
 	Filter data by selecting values above average for all X values  
 	To find RightCENTER Y value, add maximum and minimum Y values and then divide by 2. 
