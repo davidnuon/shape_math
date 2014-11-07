@@ -42,9 +42,28 @@ def main():
 
 	lines = buffy.split("\r")
 	lines = map(lambda x : map(_tonum, x.replace('\n', '').split('\t')), lines)
-
-	things =  filter_by_variable(lines, 2.0)
-	process_squares(things)
+	trials = set(map(lambda x : x[2], lines))
+	for trial in trials:
+		rows  = filter_by_variable(lines, trial)
+		targetShape = rows[0][3]
+		compatible  = rows[0][1] == 'c'
+		
+		if compatible:
+			if targetShape == 'c':
+				print "Circles"
+				process_circles(rows)
+			elif targetShape == 's':
+				print "Squares"
+				process_squares(rows)
+		else:
+			if targetShape == 'c':
+				print "Circles"
+				process_squares(rows)
+			elif targetShape == 's':
+				print "Squares"
+				process_circles(rows)
+	# things =  filter_by_variable(lines, 2.0)
+	# process_squares(things)
 
 
 if __name__ == '__main__':
