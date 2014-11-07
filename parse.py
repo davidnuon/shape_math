@@ -16,24 +16,50 @@ def filter_by_variable(list, cat):
 	return filter(lambda x : x[2] == cat, list)
 
 def process_circles(things):
-	print "Top Center: %s " % str(cr.top_center(things))
-	print "Left Center: %s" % str(cr.left_center(things))
-	print "Right Center: %s" % str(cr.right_center(things))
-	print "Bottom Center: %s" % str(cr.bottom_center(things))
-	print "Top Left: %s" % str(cr.top_left(things))
-	print "Top Right: %s" % str(cr.top_right(things))
-	print "Bottom Left: %s" % str(cr.bottom_left(things))
-	print "Bottom Right: %s" % str(cr.bottom_right(things))
+	return {"top_center" : cr.top_center(things),
+	"left_center" : cr.left_center(things),
+	"right_center" : cr.right_center(things),
+	"bottom_center" : cr.bottom_center(things),
+	"top_left" : cr.top_left(things),
+	"top_right" : cr.top_right(things),
+	"bottom_left" : cr.bottom_left(things),
+	"bottom_right" : cr.bottom_right(things)}
 
 def process_squares(things):
-	print "Top Center: %s " % str(sq.top_center(things))
-	print "Left Center: %s" % str(sq.left_center(things))
-	print "Right Center: %s" % str(sq.right_center(things))
-	print "Bottom Center: %s" % str(sq.bottom_center(things))
-	print "Top Left: %s" % str(sq.top_left(things))
-	print "Top Right: %s" % str(sq.top_right(things))
-	print "Bottom Left: %s" % str(sq.bottom_left(things))
-	print "Bottom Right: %s" % str(sq.bottom_right(things))
+	return {"top_center" : sq.top_center(things),
+	"left_center" : sq.left_center(things),
+	"right_center" : sq.right_center(things),
+	"bottom_center" : sq.bottom_center(things),
+	"top_left" : sq.top_left(things),
+	"top_right" : sq.top_right(things),
+	"bottom_left" : sq.bottom_left(things),
+	"bottom_right" : sq.bottom_right(things)}
+
+
+def format_result(result):
+	template = "%s,%s,%s,%s," +  ",".join((["%.4f"] * 16))
+	return template % (
+		str(result['participant']),
+		str(result['trial']),
+		str(result['target']),
+		str(result['compatible']),
+		result["data"]["top_center"][0],
+		result["data"]["top_center"][1],
+		result["data"]["left_center"][0],
+		result["data"]["left_center"][1],
+		result["data"]["right_center"][0],
+		result["data"]["right_center"][1],
+		result["data"]["bottom_center"][0],
+		result["data"]["bottom_center"][1],
+		result["data"]["top_left"][0],
+		result["data"]["top_left"][1],
+		result["data"]["top_right"][0],
+		result["data"]["top_right"][1],
+		result["data"]["bottom_left"][0],
+		result["data"]["bottom_left"][1],
+		result["data"]["bottom_right"][0],
+		result["data"]["bottom_right"][1]	
+	)
 
 def main():
 	buffy = ""
@@ -43,27 +69,36 @@ def main():
 	lines = buffy.split("\r")
 	lines = map(lambda x : map(_tonum, x.replace('\n', '').split('\t')), lines)
 	trials = set(map(lambda x : x[2], lines))
+	experimentData = []
 	for trial in trials:
 		rows  = filter_by_variable(lines, trial)
 		targetShape = rows[0][3]
 		compatible  = rows[0][1] == 'c'
-		
+		result = {}
+
 		if compatible:
 			if targetShape == 'c':
-				print "Circles"
-				process_circles(rows)
+				result['data'] = process_circles(rows)
 			elif targetShape == 's':
-				print "Squares"
-				process_squares(rows)
+				result['data'] = process_squares(rows)
 		else:
 			if targetShape == 'c':
-				print "Circles"
-				process_squares(rows)
+				result['data'] = process_squares(rows)
 			elif targetShape == 's':
-				print "Squares"
-				process_circles(rows)
-	# things =  filter_by_variable(lines, 2.0)
-	# process_squares(things)
+				result['data'] = process_circles(rows)
+
+		result['participant'] = int(rows[0][0])
+		result['trial'] = int(trial)
+		result['target'] = targetShape
+		result['compatible'] = 'C' if compatible else 'I'
+
+		experimentData.append(result)
+
+	header =  "participant,trial,target,compatible,topCenterX,topCenterY,leftCenterX,leftCenterY,rightCenterX,rightCenterY,bottomCenterX,bottomCenterY,topLeftX,topLeftY,topRightX,topRightY,bottomLeftX,bottomLeftY,bottomRightX,bottomRightY"
+	print header
+
+	for e in experimentData:
+ 		print format_result(e)
 
 
 if __name__ == '__main__':
