@@ -66,11 +66,12 @@ def main():
 	with open(the_filename) as f:
 		buffy = f.read()
 
-	lines = buffy.split("\r")
-	lines = map(lambda x : map(_tonum, x.replace('\n', '').split('\t')), lines)
+	lines = buffy.split("\n")
+	lines = map(lambda x : map(_tonum, x.replace('\n', '').split(',')), lines)
 	participants = set(map(lambda x : x[0], lines))
 	for participant in participants:
 		current_data = filter(lambda x : x[0] == participant, lines)
+
 		trials = set(map(lambda x : x[2], current_data))
 		experimentData = []
 		for trial in trials:
@@ -78,7 +79,7 @@ def main():
 			targetShape = rows[0][3]
 			compatible  = rows[0][1] == 'c'
 			result = {}
-
+				
 			if compatible:
 				if targetShape == 'c':
 					result['data'] = process_circles(rows)
