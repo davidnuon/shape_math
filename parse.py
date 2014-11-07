@@ -26,6 +26,7 @@ def main():
 	things =  filter_by_variable(lines, 1.0)
 
 	print "Top Center: %s " % str(cr.top_center(things))
+	print "Left Center: %s" % str(cr.left_center(things))
 
 
 

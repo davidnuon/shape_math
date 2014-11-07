@@ -1,3 +1,29 @@
+def mean(coords):
+	return sum(coords)/len(coords)
+
+def find_bigs(theCoords, idx, threshold):
+	return filter(lambda x : x[idx] > threshold, theCoords)
+
+def find_smalls(theCoords, idx, threshold):
+	return filter(lambda x : x[idx] < threshold, theCoords)
+
+
+def find_min_component(theCoords, idx):
+	return min(map(lambda x : x[idx], theCoords)) 
+
+def find_max_component(theCoords, idx):
+	return max(map(lambda x : x[idx], theCoords)) 	
+
+def center(a,b):
+	return (a - b)/2
+
+def vlookup(theCoords, idx, threshold):
+	diffs = map(lambda x : abs(x[idx] - threshold), theCoords)
+	return sorted(zip(diffs, theCoords))[0][1]
+
+
+X_AXIS = 0
+Y_AXIS = 1
 """
 
 CIRCLE
@@ -12,17 +38,14 @@ def top_center(rows):
 	xCoords = map(lambda x : x[5], rows)
 	theCoords = zip(xCoords, yCoords)
 
-	meanY = sum(yCoords)/len(yCoords)
-	meanX = sum(xCoords)/len(xCoords)
+	meanY = mean(yCoords)
 
-	bigYs = filter(lambda x : x[1] > meanY, theCoords)
-	bigYsMIN = min(map(lambda x : x[0], bigYs)) 
-	bigYsMAX = max(map(lambda x : x[0], bigYs)) 
-	centerX  = (bigYsMAX + bigYsMIN)/2
+	bigYs    = find_bigs(theCoords, Y_AXIS, meanY)
+	bigYsMIN = find_min_component(bigYs, X_AXIS) 
+	bigYsMAX = find_max_component(bigYs, X_AXIS) 
+	centerX  = center(bigYsMAX,bigYsMIN)
 
-	diffs = map(lambda x : abs(x[0] - centerX), theCoords)
-
-	return sorted(zip(diffs, theCoords))[0][1]
+	return vlookup(theCoords, X_AXIS, centerX)
 
 """
 	LeftCENTER
@@ -37,30 +60,31 @@ def left_center(rows):
 	xCoords = map(lambda x : x[5], rows)
 	theCoords = zip(xCoords, yCoords)
 
-	meanY = sum(yCoords)/len(yCoords)
-	meanX = sum(xCoords)/len(xCoords)
+	meanX = mean(xCoords)
 
-	bigYs = filter(lambda x : x[1] > meanY, theCoords)
-	bigYsMIN = min(map(lambda x : x[0], bigYs)) 
-	bigYsMAX = max(map(lambda x : x[0], bigYs)) 
-	centerX  = (bigYsMAX + bigYsMIN)/2
+	bigXs    = find_smalls(theCoords, X_AXIS, meanX)
+	bigXsMIN = find_min_component(bigXs, Y_AXIS) 
+	bigXsMAX = find_max_component(bigXs, Y_AXIS) 
+	centerY  = center(bigXsMAX,bigXsMIN)
 
-	diffs = map(lambda x : abs(x[0] - centerX), theCoords)
-
-	return sorted(zip(diffs, theCoords))[0][1]
-
-
+	return vlookup(theCoords, Y_AXIS, centerY)
 
 """
 	RightCENTER
 	Filter data by selecting values above average for all X values  
 	To find RightCENTER Y value, add maximum and minimum Y values and then divide by 2. 
 	To Find RightCENTER X-value, use VLOOKUP command with RightCENTER Y value to find the corresponding X-value. 
-	BottomCENTER
+"""
+
+"""	BottomCENTER
 	Filter data by selecting values below average for all Y values  
 	To find BottomCENTER X value, add maximum and minimum X values and then divide by 2. 
 	To Find BottomCENTER Y value, use VLOOKUP command with BottomCENTER X value to find the corresponding y-value. 
+"""
 
+
+
+"""
 	TopLEFT
 	Filter data by selecting values below average for all X values  and selecting values above average for all Y values
 	Add  maximum and minimum X value and  then divide by 2 to find Point 1
