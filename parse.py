@@ -27,8 +27,12 @@ def main():
 
 	print "Top Center: %s " % str(cr.top_center(things))
 	print "Left Center: %s" % str(cr.left_center(things))
-
-
+	print "Right Center: %s" % str(cr.right_center(things))
+	print "Bottom Center: %s" % str(cr.bottom_center(things))
+	print "Top Left: %s" % str(cr.top_left(things))
+	print "Top Right: %s" % str(cr.top_right(things))
+	print "Bottom Left: %s" % str(cr.bottom_left(things))
+	print "Bottom Right: %s" % str(cr.bottom_right(things))
 
 if __name__ == '__main__':
 	main()
