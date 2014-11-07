@@ -68,31 +68,34 @@ def main():
 
 	lines = buffy.split("\r")
 	lines = map(lambda x : map(_tonum, x.replace('\n', '').split('\t')), lines)
-	trials = set(map(lambda x : x[2], lines))
-	experimentData = []
-	for trial in trials:
-		rows  = filter_by_variable(lines, trial)
-		targetShape = rows[0][3]
-		compatible  = rows[0][1] == 'c'
-		result = {}
+	participants = set(map(lambda x : x[0], lines))
+	for participant in participants:
+		current_data = filter(lambda x : x[0] == participant, lines)
+		trials = set(map(lambda x : x[2], current_data))
+		experimentData = []
+		for trial in trials:
+			rows  = filter_by_variable(current_data, trial)
+			targetShape = rows[0][3]
+			compatible  = rows[0][1] == 'c'
+			result = {}
 
-		if compatible:
-			if targetShape == 'c':
-				result['data'] = process_circles(rows)
-			elif targetShape == 's':
-				result['data'] = process_squares(rows)
-		else:
-			if targetShape == 'c':
-				result['data'] = process_squares(rows)
-			elif targetShape == 's':
-				result['data'] = process_circles(rows)
+			if compatible:
+				if targetShape == 'c':
+					result['data'] = process_circles(rows)
+				elif targetShape == 's':
+					result['data'] = process_squares(rows)
+			else:
+				if targetShape == 'c':
+					result['data'] = process_squares(rows)
+				elif targetShape == 's':
+					result['data'] = process_circles(rows)
 
-		result['participant'] = int(rows[0][0])
-		result['trial'] = int(trial)
-		result['target'] = targetShape
-		result['compatible'] = 'C' if compatible else 'I'
+			result['participant'] = int(rows[0][0])
+			result['trial'] = int(trial)
+			result['target'] = targetShape
+			result['compatible'] = 'C' if compatible else 'I'
 
-		experimentData.append(result)
+			experimentData.append(result)
 
 	header =  "participant,trial,target,compatible,topCenterX,topCenterY,leftCenterX,leftCenterY,rightCenterX,rightCenterY,bottomCenterX,bottomCenterY,topLeftX,topLeftY,topRightX,topRightY,bottomLeftX,bottomLeftY,bottomRightX,bottomRightY"
 	print header
