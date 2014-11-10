@@ -68,6 +68,8 @@ def main():
 
 	lines = buffy.split("\n")
 	lines = map(lambda x : map(_tonum, x.replace('\n', '').split(',')), lines)
+	lines = filter(lambda line: len(line) == 7, lines)
+	
 	participants = set(map(lambda x : x[0], lines))
 	for participant in participants:
 		current_data = filter(lambda x : x[0] == participant, lines)
